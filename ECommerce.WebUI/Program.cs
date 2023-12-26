@@ -1,7 +1,16 @@
+using ASPProject.Entities;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+var connection = builder.Configuration.GetConnectionString("myconn");
+builder.Services.AddDbContext<CustomIdentityDBContext>(options =>
+{
+    options.UseSqlServer(connection, b => b.MigrationsAssembly("ASPProject.WebUI"));
+});
 
 var app = builder.Build();
 

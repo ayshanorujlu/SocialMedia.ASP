@@ -1,8 +1,8 @@
-﻿using ECommerce.WebUI.Models;
+﻿using ASPProject.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace ECommerce.WebUI.Controllers
+namespace ASPProject.WebUI.Controllers
 {
     public class HomeController : Controller
     {

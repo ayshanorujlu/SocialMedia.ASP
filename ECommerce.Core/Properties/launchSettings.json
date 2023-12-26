@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ECommerce.Core": {
+    "ASPProject.Core": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

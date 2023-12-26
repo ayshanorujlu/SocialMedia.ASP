@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ECommerce.DataAccess": {
+    "ASPProject.DataAccess": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
