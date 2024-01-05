@@ -14,25 +14,27 @@ namespace ASPProject.WebUI.Controllers
         private SignInManager<CustomIdentityUser> _signInManager;
         private IWebHostEnvironment _webHost;
         private CustomIdentityDBContext _context;
+        private readonly IPasswordHasher<CustomIdentityUser> _passwordHasher;
 
-        public AccountController(UserManager<CustomIdentityUser> userManager,
-            RoleManager<CustomIdentityRole> roleManager,
-            SignInManager<CustomIdentityUser> signInManager,
-            IWebHostEnvironment webHost,
-            CustomIdentityDBContext context)
+        public AccountController(
+           UserManager<CustomIdentityUser> userManager,
+           RoleManager<CustomIdentityRole> roleManager,
+           IPasswordHasher<CustomIdentityUser> passwordHasher,
+           CustomIdentityDBContext context,
+           IWebHostEnvironment webHost,
+           SignInManager<CustomIdentityUser> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
-            _webHost = webHost;
+            _passwordHasher = passwordHasher;
             _context = context;
+            _webHost = webHost;
         }
-
         public IActionResult Register()
         {
-            return View();
+            return View("Register");
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -47,6 +49,7 @@ namespace ASPProject.WebUI.Controllers
 
                 CustomIdentityUser user = new CustomIdentityUser
                 {
+                    Id = Guid.NewGuid().ToString(),
                     UserName = model.Username,
                     Email = model.Email,
                     ImageUrl = model.ImageUrl,
@@ -81,12 +84,18 @@ namespace ASPProject.WebUI.Controllers
 
         public IActionResult Login()
         {
-            return View();
+            return View("Login");
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                // Log or debug the 'errors' to see validation issues
+            }
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
@@ -107,14 +116,9 @@ namespace ASPProject.WebUI.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> LogOut()
+        public IActionResult ForgotPassword()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            user.DisconnectTime = DateTime.Now;
-            user.IsOnline = false;
-            await _context.SaveChangesAsync();
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Account");
+            return View("ForgotPassword");
         }
     }
 }

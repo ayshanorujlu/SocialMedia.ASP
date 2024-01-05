@@ -4,9 +4,17 @@ namespace ASPProject.WebUI.Controllers
 {
     public class FeedController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Weather()
         {
-            return View();
+            return View("Weather");
+        }
+        public IActionResult Video()
+        {
+            return View("Video");
+        }
+        public IActionResult Favorite()
+        {
+            return View("Favorite");
         }
     }
 }
