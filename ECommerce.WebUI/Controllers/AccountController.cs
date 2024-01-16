@@ -1,9 +1,11 @@
 ﻿using ASPProject.Entities;
 using ASPProject.WebUI.Helpers;
 using ASPProject.WebUI.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ASPProject.WebUI.Controllers
 {
@@ -94,7 +96,6 @@ namespace ASPProject.WebUI.Controllers
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
-                // Log or debug the 'errors' to see validation issues
             }
             if (ModelState.IsValid)
             {
@@ -116,10 +117,20 @@ namespace ASPProject.WebUI.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> LogOut()
+        {
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            currentUser.IsOnline = false;
+            _context.Users.Update(currentUser);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Login", "Account");
+        }
+
         public IActionResult ForgotPassword()
         {
             return View("ForgotPassword");
         }
-    }
+    } 
 }
 

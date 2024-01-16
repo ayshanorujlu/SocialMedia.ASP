@@ -1,0 +1,18 @@
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ASPProject.Entities
+{
+    public class Post
+    {
+        public int Id { get; set; }
+        public List<Image>? ImageUrls { get; set; }
+        public List<Video>? VideoUrls { get; set; }
+        public List<Friend>? TaggedFriends { get; set; }
+        public DateTime PostDate { get; set; }
+    }
+}

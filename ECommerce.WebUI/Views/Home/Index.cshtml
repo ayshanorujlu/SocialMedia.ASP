@@ -1,5 +1,6 @@
-﻿﻿﻿@{
+﻿@{
     ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <!-- Start Content Page Box Area -->
 <div class="content-page-box-area">
@@ -210,22 +211,30 @@
                 <div class="news-feed news-feed-form">
                     <h3 class="news-feed-title">Create New Post</h3>
 
-                    <form>
+                    <form id="uploadForm" action="Upload" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <textarea name="message" class="form-control" placeholder="Write something here..."></textarea>
+                            <textarea id="message" name="message" class="form-control" placeholder="Write something here..."></textarea>
                         </div>
+                        <div id="image-preview-container"></div>
+                        <div id="video-preview-container"></div>
+                        <input id="photo-input" name="files" type="file" accept="image/*" multiple style="display: none;">
+                        <input id="video-input" name="videos" type="file" accept="video/*" multiple style="display: none;">
                         <ul class="button-group d-flex justify-content-between align-items-center">
                             <li class="photo-btn">
-                                <button type="submit"><i class="flaticon-gallery"></i> Photo</button>
+                                <label for="photo-input">
+                                    <button type="button" onclick="handlePhotoUpload()"><i class="flaticon-gallery"></i> Photo</button>
+                                </label>
                             </li>
                             <li class="video-btn">
-                                <button type="submit"><i class="flaticon-video"></i> Video</button>
+                                <label for="video-input">
+                                    <button type="button" onclick="handleVideoUpload()"><i class="flaticon-video"></i> Video</button>
+                                </label>
                             </li>
                             <li class="tag-btn">
-                                <button type="submit"><i class="flaticon-tag"></i> Tag Friends</button>
+                                <button type="button" onclick="submitForm('tag')"><i class="flaticon-tag"></i> Tag Friends</button>
                             </li>
                             <li class="post-btn">
-                                <button type="submit">Post</button>
+                                <button type="button" onclick="submitForm('post')">Post</button>
                             </li>
                         </ul>
                     </form>
@@ -272,7 +281,7 @@
                                 <a href="#">
                                     <img src="~/assets/images/user/user-13.jpg" alt="image">
                                 </a>
-                                <span><a href="#">Matthew</a></span>
+                                <span><a href="#">@ViewBag.User.Username</a></span>
                             </div>
                         </div>
                         <div class="col-lg-2 col-sm-4 col-4">
@@ -912,4 +921,5 @@
     </div>
 </div>
 
+<script src="~/assets/js/site.js"></script>
 <!-- End Content Page Box Area -->

@@ -1,6 +1,8 @@
 using ASPProject.Entities;
+using ASPProject.WebUI.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,15 +19,22 @@ builder.Services.AddIdentity<CustomIdentityUser, CustomIdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IPasswordHasher<CustomIdentityUser>, PasswordHasher<CustomIdentityUser>>();
-//builder.Services.AddAntiforgery(options =>
-//{
-//    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-//});
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+builder.Services.AddSignalR();
 var app = builder.Build();
+
+
+
 
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -38,8 +47,10 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Account}/{action=Register}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute("Default", "{controller=Account}/{action=Register}/{id?}");
+    endpoints.MapHub<HUB>("/chathub");
+});
 
 app.Run();

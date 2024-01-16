@@ -3,6 +3,7 @@ using ASPProject.WebUI.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASPProject.WebUI.Controllers
 {
@@ -23,22 +24,39 @@ namespace ASPProject.WebUI.Controllers
             ViewBag.User = new
             {
                 ImageUrl = user.ImageUrl,
-                Username = user.UserName
+                Username = user.UserName,
+                Email = user.Email
             };
-            var something = ViewBag.User.ImageUrl;
             return View();
         }
-        public IActionResult MyProfile()
+        public async Task<IActionResult> MyProfile()
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            ViewBag.User = new
+            {
+                ImageUrl = user.ImageUrl,
+                Username = user.UserName,
+                Email = user.Email
+            };
             return View("MyProfile");
         }
 
+        public async Task<List<CustomIdentityUser>> GetAllFriends()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var allFriends = _context.Friends
+                .Where(f => f.OwnId == user.Id)
+                .Select(f => f.YourFriend)
+                .ToList();
 
+            return allFriends;
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
         }
     }
-}
+    }
